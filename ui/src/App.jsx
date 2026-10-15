@@ -14,13 +14,16 @@ function App() {
   useEffect(() => {
     fetch(`${baseApi}/auth/me`, {
       credentials: "include",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+      },
     })
       .then((res) => {
         if (res.ok) return res.json();
         throw res;
       })
-      .then((res) => {
-        setUser(res);
+      .then((me) => {
+        setUser(me);
       })
       .catch((error) => {
         console.log(error);
@@ -51,7 +54,9 @@ function App() {
         if (res.ok) return res.json();
         throw res;
       })
-      .then((user) => console.log(user))
+      .then(({ token }) => {
+        localStorage.setItem("token", token);
+      })
       .catch((error) => {
         if (error.status === 401) {
           return setError("Email hoặc Mật khẩu không chính xác");
